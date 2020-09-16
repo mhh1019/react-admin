@@ -1,9 +1,6 @@
 import React from 'react';
-import './App.scss';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom'
-import Login from './views/Login';
-import About from './views/About';
-
+import Login from './views/login/Index'
 class App extends React.Component {
     constructor(props) {
         super(props)
@@ -12,11 +9,9 @@ class App extends React.Component {
     render() {
         return (
             <div className='test'>
-                <h1>ass</h1>
                 <Router>
                     <Switch>
                         <Route component={Login} path='/login'></Route>
-                        <Route component={About} path='/about'></Route>
                     </Switch>
                 </Router>
             </div>
