@@ -6,8 +6,8 @@ class Login extends Component {
     super(props);
     this.state = {}
   }
-  onFinish = () => {
-    alert('1')
+  onFinish = (values) => {
+    console.log(values)
   }
   toggleForm = () => {
     this.props.switchForm('register')
@@ -37,8 +37,8 @@ class Login extends Component {
               <Input.Password placeholder='请输入密码' prefix={<UnlockOutlined />} />
             </Form.Item>
             <Form.Item
-              name="password"
-              rules={[{ required: true, message: '请输入验证码' }]}
+              name="code"
+              rules={[{ required: true, message: '请输入验证码' },{len:6,message:'请输入6位验证码'}]}
             >
               <Row gutter={13}>
                 <Col span={15}>
