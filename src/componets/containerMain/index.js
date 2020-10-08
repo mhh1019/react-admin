@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Switch } from 'react-router-dom'
-import User from '../../views/user/Index';
-import Add from '../../views/user/Add'
 import PrivateRouter from '../privateRouter/index'
+import component from './components'
+
 class MainContent extends Component {
     constructor(props) {
         super(props);
@@ -11,8 +11,15 @@ class MainContent extends Component {
     render() { 
         return ( 
             <Switch>
-                <PrivateRouter exact path='/index/user/list' component={User}/>
+                {
+                    component.map(item=>{
+                        return <PrivateRouter exact path={item.path} component={item.component} />
+                    })
+                }
+                {/* <PrivateRouter exact path='/index/user/list' component={User}/>
                 <PrivateRouter exact path='/index/user/add' component={Add} />
+                <PrivateRouter exact path='/index/department/list' component={DepartmentIndex} />
+                <PrivateRouter exact path='/index/department/add' component={DepartmentAdd} /> */}
             </Switch>
          );
     }

@@ -8,27 +8,42 @@ const { Sider, Header, Content } = Layout
 class Home extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            collapsed:true
-         }
+        this.state = {
+            collapsed: true
+        }
     }
-    render() { 
-        return ( 
+    componentDidMount(){
+        const collapsed = JSON.parse(sessionStorage.getItem('collapsed'))
+        console.log(collapsed)
+        this.setState({
+            collapsed
+        })
+    }
+    collapsedChange = () => {
+        const collapsed = !this.state.collapsed
+        this.setState({
+            collapsed
+        })
+        console.log(collapsed)
+        sessionStorage.setItem('collapsed', collapsed)
+    }
+    render() {
+        return (
             <Layout className='layout-wrap'>
-               <Sider width='250px' collapsed={this.state.collapsed}>
-                   <Aside />
-               </Sider>
-               <Layout>
-                   <Header className='layout-header'>
-                        <HeaderMain />
-                   </Header>
-                   <Content className='layout-content'>
-                       <MainContent/>
-                   </Content>
-               </Layout>
+                <Sider width='250px' collapsed={this.state.collapsed}>
+                    <Aside />
+                </Sider>
+                <Layout>
+                    <Header className='layout-header'>
+                        <HeaderMain collapsedChange={this.collapsedChange}/>
+                    </Header>
+                    <Content className='layout-content'>
+                        <MainContent />
+                    </Content>
+                </Layout>
             </Layout>
-         );
+        );
     }
 }
- 
+
 export default Home;

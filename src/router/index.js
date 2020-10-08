@@ -9,7 +9,7 @@ const router = [
       icon: 'laptop',
       key: '/index/user',
       child: [
-        {key: '/index/user/list', title: '用户列表', icon: '',},
+        {key: '/index/user/index', title: '用户列表', icon: '',},
         {
           key: '/index/user/add', 
           title: '添加用户', 
@@ -22,7 +22,7 @@ const router = [
       icon: 'bars',
       key: '/index/department',
       child: [
-        {key: '/index/department/list', title: '部门列表', icon: ''},
+        {key: '/index/department/index', title: '部门列表', icon: ''},
         {key: '/index/department/add', title: '添加部门', icon: ''},
       ]
     },

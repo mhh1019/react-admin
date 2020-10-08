@@ -5,11 +5,15 @@ class Header extends Component {
         super(props);
         this.state = {  }
     }
+    collapsed = () => {
+        this.props.collapsedChange()
+    }
+    
     render() { 
         return ( 
             <div>
                 <span>
-                    <MenuFoldOutlined />
+                    <MenuFoldOutlined onClick={this.collapsed}/>
                 </span>
             </div>
          );
