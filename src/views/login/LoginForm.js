@@ -1,16 +1,53 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Form, Input, Button, Row, Col,message } from 'antd';
 import { UserOutlined, UnlockOutlined } from '@ant-design/icons';
+import { withRouter } from 'react-router-dom'
+import { login } from '../../api/account'
+import Code from '../../componets/code/index'
+import CryptoJs from 'crypto-js';
+import { setSessionItem } from '../../utils/session'
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      username:'',
+      codeDisabled:true,
+      codeLoading:false,
+      codeTxt:'获取验证码',
+      module:'login',
+      password:'',
+      code:''
+    }
   }
   onFinish = (values) => {
-    console.log(values)
+    const requestData = {
+      username:this.state.username,
+      password:CryptoJs.MD5(this.state.password).toString(),
+      code:this.state.code
+    }
+    login(requestData).then(res=>{
+      message.success(res.data.message)
+      setSessionItem(res.data.data.token)
+      this.props.history.push('/index')
+    })
   }
   toggleForm = () => {
     this.props.switchForm('register')
+  }
+  inputChang = (e) => {
+    this.setState({
+      username: e.target.value
+    })
+  }
+  inputChangPassword = (e) => {
+    this.setState({
+      password:e.target.value
+    })
+  }
+  inputCodeChange = (e) => {
+    this.setState({
+      code:e.target.value
+    })
   }
   render() {
     return (
@@ -26,15 +63,17 @@ class Login extends Component {
           >
             <Form.Item
               name="username"
-              rules={[{ required: true, message: '请输入登录人!' }, { type: "email", message: '请输入正确格式' }]}
+              rules={[
+                { required: true, message: '请输入登录人!' },
+              ]}
             >
-              <Input placeholder='请输入登录人' prefix={<UserOutlined />} />
+              <Input value={this.state.username} onChange={this.inputChang} placeholder='请输入登录人' prefix={<UserOutlined />} />
             </Form.Item>
             <Form.Item
               name="password"
               rules={[{ required: true, message: '请输入密码' },{min:6,message:'不能小于6位'}]}
             >
-              <Input.Password placeholder='请输入密码' prefix={<UnlockOutlined />} />
+              <Input.Password value={this.state.password} onChange={this.inputChangPassword} placeholder='请输入密码' prefix={<UnlockOutlined />} />
             </Form.Item>
             <Form.Item
               name="code"
@@ -42,10 +81,11 @@ class Login extends Component {
             >
               <Row gutter={13}>
                 <Col span={15}>
-                  <Input placeholder='请输入验证码' prefix={<UnlockOutlined />} />
+                  <Input value={this.state.code} onChange={this.inputCodeChange} placeholder='请输入验证码' prefix={<UnlockOutlined />} />
                 </Col>
                 <Col span={9}>
-                  <Button type="danger">获取验证码</Button>
+                  <Code username={this.state.username} module={this.state.module}/>
+                  {/* <Button type="danger" block onClick={this.getCode} loading={this.state.codeLoading} disabled={this.state.codeDisabled}>{this.state.codeTxt}</Button> */}
                 </Col>
               </Row>
             </Form.Item>
@@ -58,4 +98,4 @@ class Login extends Component {
     )
   }
 }
-export default Login
+export default withRouter(Login)

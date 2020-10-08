@@ -1,16 +1,61 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Form, Input, Button, Row, Col, message } from 'antd';
 import { UserOutlined, UnlockOutlined } from '@ant-design/icons';
+import Code from '../../componets/code/index'
+import { reg_password } from '../../utils/validate';
+import { register } from '../../api/account'
+import CryptoJs from 'crypto-js';
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            username:'',
+            password:'',
+            passwordSecond:'',
+            module:'register',
+            code:''
+        }
     }
-    onFinish = () => {
-        alert('1')
+    onFinish = (values) => {
+        if(this.state.passwordSecond !== this.state.password) {
+            message.warning('两次密码输入不一致')
+        }
+        const requestData = {
+            username:this.state.username,
+            password:CryptoJs.MD5(this.state.password).toString(),
+            code:this.state.code
+        }
+        register(requestData).then(res=>{
+            message.success(res.data.message)
+            if(res.data.resCode === 0) {
+                this.toggleForm()
+            }
+        }).catch(err=>{
+            console.log(err)
+        })
     }
     toggleForm = () => {
         this.props.switchForm('login')
+    }
+    inputChangeUsername = (e) => {
+        this.setState({
+            username:e.target.value
+        })
+    }
+    inputChangePassword = (e) => {
+        this.setState({
+            password:e.target.value
+        })
+    }
+    inputSecond = (e) => {
+        this.setState({
+            passwordSecond:e.target.value
+        })
+    }
+    codeChange = (e) => {
+        this.setState({
+            code:e.target.value
+        })
     }
     render() {
         return (
@@ -26,37 +71,40 @@ class Login extends Component {
                     >
                         <Form.Item
                             name="username"
-                            rules={[{ required: true, message: 'Please input your username!' }]}
+                            rules={[{ required: true, message: '请输入登录人!' }]}
                         >
-                            <Input placeholder='请输入登录人' prefix={<UserOutlined />} />
+                            <Input value={this.state.username} onChange={this.inputChangeUsername} placeholder='请输入登录人' prefix={<UserOutlined />} />
                         </Form.Item>
                         <Form.Item
                             name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
+                            rules={[
+                                { required: true, message: '请输入密码!' },
+                                { pattern:reg_password, message:'密码格式不正确！'}
+                            ]}
                         >
-                            <Input.Password placeholder='请输入密码' prefix={<UnlockOutlined />} />
+                            <Input.Password value={this.state.password} onChange={this.inputChangePassword} placeholder='请输入密码' prefix={<UnlockOutlined />} />
                         </Form.Item>
                         <Form.Item
-                            name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
+                            name="passwords"
+                            rules={[{ required: true, message: '请确认输入密码!' }]}
                         >
-                            <Input.Password placeholder='请确认输入密码' prefix={<UnlockOutlined />} />
+                            <Input.Password  value={this.state.passwordSecond} onChange={this.inputSecond} placeholder='请确认输入密码' prefix={<UnlockOutlined />} />
                         </Form.Item>
                         <Form.Item
-                            name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
+                            name="code"
+                            rules={[{ required: true, message: '请输入验证码!' }]}
                         >
                             <Row gutter={13}>
                                 <Col span={15}>
-                                    <Input placeholder='请输入验证码' prefix={<UnlockOutlined />} />
+                                    <Input value={this.state.code} onChange={this.codeChange} placeholder='请输入验证码' prefix={<UnlockOutlined />} />
                                 </Col>
                                 <Col span={9}>
-                                    <Button type="danger">获取验证码</Button>
+                                    <Code username={this.state.username} module={this.state.module}/>
                                 </Col>
                             </Row>
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" block> 登录 </Button>
+                            <Button type="primary" htmlType="submit" block> 注册 </Button>
                         </Form.Item>
                     </Form>
                 </div>
